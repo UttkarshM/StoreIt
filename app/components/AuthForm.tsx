@@ -1,68 +1,100 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-
+// import { signup, login } from '@/lib/actions/auth/auth';
 import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { PassThrough } from 'stream';
-
-const formSchema = z.object({
-  username: z.string().min(2).max(50),
-  email: z.string().email(),
-  password: z.string().min(8),
-});
+import { login, signup } from '../(auth)/actions';
 
 type FormType = 'sign-in' | 'sign-up';
 
-export const AuthForm = ({ type }: { type: FormType }) => {
-  const [userName, setUserName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+const signUpSchema = z.object({
+  user_name: z.string().min(2, 'Username too short').max(50),
+  email: z.string().email('Invalid email'),
+  password: z.string().min(8, 'Password too short'),
+});
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+const signInSchema = z.object({
+  email: z.string().email('Invalid email'),
+  password: z.string().min(8, 'Password too short'),
+});
+
+type SignUpData = z.infer<typeof signUpSchema>;
+type SignInData = z.infer<typeof signInSchema>;
+
+export const AuthForm = ({ type }: { type: FormType }) => {
+  const isSignUp = type === 'sign-up';
+
+  const form = useForm<SignUpData | SignInData>({
+    resolver: zodResolver(isSignUp ? signUpSchema : signInSchema),
     defaultValues: {
-      username: '',
+      user_name: '',
       email: '',
       password: '',
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+  const handleSubmit = async (values: any) => {
+    try {
+      if (isSignUp) {
+        await signup(values);
+        console.log('Sign Up:', values);
+      } else {
+        await login(values);
+        console.log('Sign In:', values);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
 
-  return type == 'sign-up' ? (
-    <>
+  return (
+    <div>
       <h1 className="mb-[10%] text-5xl underline underline-offset-8">
-        Sign Up
+        {isSignUp ? 'Sign Up' : 'Sign In'}
       </h1>
+      {isSignUp ? (
+        <p className="mb-4 text-sm text-gray-600">
+          Already have an account?{' '}
+          <a href="/login" className="text-blue-500 hover:underline">
+            Sign Up
+          </a>
+        </p>
+      ) : (
+        <p className="mb-4 text-sm text-gray-600">
+          Want to log in an exisiting account?{' '}
+          <a href="/signup" className="text-blue-500 hover:underline">
+            Sign In
+          </a>
+        </p>
+      )}
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <FormField
-            control={form.control}
-            name="username"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Username</FormLabel>
-                <FormControl>
-                  <Input placeholder="Username" {...field} />
-                </FormControl>
-              </FormItem>
-            )}
-          />
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
+          {isSignUp && (
+            <FormField
+              control={form.control}
+              name="user_name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Username</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Username" {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          )}
+
           <FormField
             control={form.control}
             name="email"
@@ -75,6 +107,7 @@ export const AuthForm = ({ type }: { type: FormType }) => {
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
             name="password"
@@ -82,50 +115,16 @@ export const AuthForm = ({ type }: { type: FormType }) => {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input placeholder="Password" {...field} />
+                  <Input type="password" placeholder="Password" {...field} />
                 </FormControl>
               </FormItem>
             )}
           />
-          <Button type="submit">Sign Up</Button>
+
+          <Button type="submit">{isSignUp ? 'Sign Up' : 'Sign In'}</Button>
         </form>
       </Form>
-    </>
-  ) : (
-    <>
-      <h1 className="mb-[10%] text-5xl underline underline-offset-8">
-        Sign In
-      </h1>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input placeholder="Email" {...field} />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Password</FormLabel>
-                <FormControl>
-                  <Input placeholder="Password" {...field} />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <Button type="submit">Sign In</Button>
-        </form>
-      </Form>
-    </>
+    </div>
   );
 };
 
