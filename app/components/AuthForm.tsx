@@ -67,14 +67,14 @@ export const AuthForm = ({ type }: { type: FormType }) => {
         <p className="mb-4 text-sm text-gray-600">
           Already have an account?{' '}
           <a href="/login" className="text-blue-500 hover:underline">
-            Sign Up
+            Sign In
           </a>
         </p>
       ) : (
         <p className="mb-4 text-sm text-gray-600">
           Want to log in an exisiting account?{' '}
           <a href="/signup" className="text-blue-500 hover:underline">
-            Sign In
+            Sign Up
           </a>
         </p>
       )}

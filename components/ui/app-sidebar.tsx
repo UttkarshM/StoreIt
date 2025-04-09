@@ -30,7 +30,7 @@ interface Props {
   menu_label?: string;
 }
 
-export function AppSidebar({ items = [], menu_label = 'Menu' }: Props) {
+export function AppSidebar({ items = [], menu_label = '' }: Props) {
   return (
     <Sidebar collapsible="none">
       <SidebarContent>

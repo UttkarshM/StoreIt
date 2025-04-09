@@ -12,21 +12,15 @@ const items = [
     icon: Home,
   },
   {
-    title: 'Inbox',
-    url: '#',
-    icon: Inbox,
-  },
-  {
-    title: 'Search',
-    url: '#',
-    icon: Search,
-  },
-  {
     title: 'Settings',
     url: '#',
     icon: Settings,
   },
-  { title: 'Logout', url: '/sign-in', icon: LogOut },
+  {
+    title: 'Logout',
+    url: '/login',
+    icon: LogOut,
+  },
 ];
 
 const layout = ({ children }: { children: React.ReactNode }) => {
