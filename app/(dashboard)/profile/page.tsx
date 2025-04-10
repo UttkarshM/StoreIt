@@ -14,10 +14,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-
+import { getUserInfo, getUser } from '@/utils/actions';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
 
 const profileSchema = z.object({
   name: z.string().min(2, 'Name is required'),
@@ -27,7 +28,41 @@ const profileSchema = z.object({
 
 type ProfileFormData = z.infer<typeof profileSchema>;
 
+interface UserInfo {
+  name: string;
+  email: string;
+  bio: string;
+}
+
+// Uncomment this line to fetch user info on component mount
+
 export default function UserProfilePage() {
+  // getUserInfo();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [bio, setBio] = useState('');
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const userInfo = await getUserInfo();
+
+        if (!userInfo) {
+          console.log('No user found');
+          return;
+        }
+        setName(userInfo.user_name);
+        setEmail(userInfo.email);
+
+        // console.log('2.)User info:', userInfo.user_name);
+      } catch (error) {
+        console.error('Error fetching user info:', error);
+      }
+    };
+
+    fetchUserInfo();
+  }, []);
+
   const {
     register,
     handleSubmit,
@@ -35,7 +70,7 @@ export default function UserProfilePage() {
   } = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
-      name: 'John Doe',
+      name: 'John ',
       email: 'john@example.com',
       bio: 'Software engineer and coffee enthusiast.',
     },
@@ -47,7 +82,7 @@ export default function UserProfilePage() {
   };
 
   return (
-    <div className="flex flex-row max-w-3xl mx-auto p-6">
+    <div className="flex flex-row w-[500px] mx-auto p-6">
       <Tabs className="" defaultValue="profile">
         <TabsList className="grid w-full grid-cols-2 mb-4">
           <TabsTrigger value="profile">Profile</TabsTrigger>
@@ -55,14 +90,14 @@ export default function UserProfilePage() {
         </TabsList>
 
         <TabsContent value="profile">
-          <Card className="max-w-[400px] flex flex-col gap-2">
+          <Card className="w-[400px] flex flex-col gap-2">
             <CardHeader className="flex flex-col items-center gap-2">
               <Avatar className="w-20 h-20 mb-5">
                 <AvatarImage src="/user.jpg" />
                 <AvatarFallback>JD</AvatarFallback>
               </Avatar>
-              <CardTitle>John Doe</CardTitle>
-              <CardDescription>john@example.com</CardDescription>
+              <CardTitle>{name}</CardTitle>
+              <CardDescription>{email}</CardDescription>
             </CardHeader>
             <form onSubmit={handleSubmit(onSubmit)}>
               <CardContent className="space-y-4">
@@ -70,7 +105,7 @@ export default function UserProfilePage() {
                   <Label className="mb-2" htmlFor="name">
                     Name
                   </Label>
-                  <Input id="name" {...register('name')} />
+                  <Input id="name" defaultValue={name} />
                   {errors.name && (
                     <p className="text-sm text-red-500">
                       {errors.name.message}
@@ -82,7 +117,7 @@ export default function UserProfilePage() {
                   <Label className="mb-2" htmlFor="email">
                     Email
                   </Label>
-                  <Input id="email" type="email" {...register('email')} />
+                  <Input id="email" type="email" defaultValue={email} />
                   {errors.email && (
                     <p className="text-sm text-red-500">
                       {errors.email.message}
@@ -94,16 +129,27 @@ export default function UserProfilePage() {
                   <Label className="mb-2" htmlFor="bio">
                     Bio
                   </Label>
-                  <Textarea id="bio" rows={4} {...register('bio')} />
+                  <Textarea
+                    id="bio"
+                    rows={4}
+                    defaultValue={bio ? bio : 'Software Engineer'}
+                  />
                 </div>
               </CardContent>
               <CardFooter>
-                <Label className="text-black mt-5 text-[14px]">
-                  Total Space Occupied:
-                </Label>
-                <Label className="text-gray-600 ml-2 mt-5 text-[14px]">
-                  50 GB of 100 GB
-                </Label>
+                <div className="flex flex-col items-center justify-center w-full">
+                  <Label className="text-black mt-5 text-[14px]">
+                    Total Space Occupied:
+                  </Label>
+                  <Label className="text-gray-600 ml-2 mt-5 text-[14px]">
+                    50 GB of 100 GB
+                  </Label>
+                  <div className="flex flex-col items-center justify-between w-[100px] mt-5">
+                    <Button type="submit" className="w-full ml-2">
+                      Save
+                    </Button>
+                  </div>
+                </div>
               </CardFooter>
             </form>
           </Card>

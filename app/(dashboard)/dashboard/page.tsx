@@ -10,6 +10,8 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
+import SearchBar from '@/app/components/Sidebar';
+import PieChartComponent from '@/app/components/space-pie-chart';
 
 const mockFiles = [
   {
@@ -71,29 +73,27 @@ const mockFiles = [
 export default function DashboardPage() {
   return (
     <main className="p-6 w-[100%]  mx-auto">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-row max-md:flex-col justify-between items-center mb-6">
         <div>
-          <h1 className="text-3xl font-semibold">Dashboard</h1>
-          <p className="text-muted-foreground">
-            Welcome back! Here are your recent files.
-          </p>
+          <h1 className="text-3xl font-semibold">Welcome back!</h1>
         </div>
-        <div className="flex items-center gap-2">
+        <SearchBar />
+        <div className="flex items-center gap-2 p-2">
           <Link href="/upload">
             <Button>Upload File</Button>
           </Link>
-          <Avatar>
-            <AvatarImage src="/user.jpg" />
-            <AvatarFallback>JD</AvatarFallback>
-          </Avatar>
         </div>
       </div>
 
-      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
+      <div className="flex flex-row justify-center items-center w-full p-10 bg-slate-200">
+        <PieChartComponent />
+      </div>
+
+      <div className="mt-10 grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
         {mockFiles.map((file, idx) => (
           <Card key={idx} className="hover:shadow-lg transition-shadow">
             <CardHeader>
-              <CardTitle className="truncate">{file.name}</CardTitle>
+              <CardTitle className="truncate h-8">{file.name}</CardTitle>
               <CardDescription>{file.uploadedAt}</CardDescription>
             </CardHeader>
             <CardContent className="text-sm text-muted-foreground">

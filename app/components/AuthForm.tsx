@@ -14,7 +14,7 @@ import {
   FormLabel,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { login, signup } from '../(auth)/actions';
+import { login, signup } from '../../utils/actions';
 
 type FormType = 'sign-in' | 'sign-up';
 

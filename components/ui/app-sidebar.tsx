@@ -8,11 +8,13 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
+  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 
+import { User } from 'lucide-react';
 // Menu items.
 
 interface SidebarItem {
@@ -28,11 +30,24 @@ interface AppSidebarProps {
 interface Props {
   items?: SidebarItem[];
   menu_label?: string;
+  trigger?: boolean;
 }
 
-export function AppSidebar({ items = [], menu_label = '' }: Props) {
+export function AppSidebar({
+  items = [],
+  menu_label = '',
+  trigger = true,
+}: Props) {
   return (
-    <Sidebar collapsible="none">
+    <Sidebar variant="sidebar" collapsible="icon">
+      {trigger && (
+        <SidebarHeader>
+          <div className="flex flex-col justify-center items-start w-full pt-5 ml-5 text-[24px] ">
+            <User className="w-12 h-12 text-blue-600 mb-7 border border-slate-700 rounded-[50%]" />
+            <h1 className="text-lg font-semibold">Storeit</h1>
+          </div>
+        </SidebarHeader>
+      )}
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>{menu_label}</SidebarGroupLabel>
