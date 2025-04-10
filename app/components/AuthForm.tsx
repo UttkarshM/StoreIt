@@ -14,7 +14,7 @@ import {
   FormLabel,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { login, signup } from '../(auth)/actions';
+import { login, signup } from '../../utils/actions';
 
 type FormType = 'sign-in' | 'sign-up';
 
@@ -67,14 +67,14 @@ export const AuthForm = ({ type }: { type: FormType }) => {
         <p className="mb-4 text-sm text-gray-600">
           Already have an account?{' '}
           <a href="/login" className="text-blue-500 hover:underline">
-            Sign Up
+            Sign In
           </a>
         </p>
       ) : (
         <p className="mb-4 text-sm text-gray-600">
           Want to log in an exisiting account?{' '}
           <a href="/signup" className="text-blue-500 hover:underline">
-            Sign In
+            Sign Up
           </a>
         </p>
       )}
