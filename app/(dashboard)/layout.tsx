@@ -21,7 +21,10 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         <SidebarProvider style={{ '--sidebar-width': '10rem' }}>
           <AppSidebar items={items} trigger={trigger} />
           <main>
-            <SidebarTrigger onClick={() => setTrigger(!trigger)} />
+            <SidebarTrigger
+              className="fixed bg-slate-400 p-2 mt-5 rounded-[50%]"
+              onClick={() => setTrigger(!trigger)}
+            />
           </main>
         </SidebarProvider>
       </div>

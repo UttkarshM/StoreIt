@@ -4,12 +4,12 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
 import { createClient } from '@/utils/supabase/server';
-
-type Authform = {
-  email: string;
-  user_name?: string;
-  password: string;
-};
+import {
+  Authform,
+  getFileType,
+  getUserParams,
+  FileWithPath,
+} from './supabase/types';
 
 export async function login(formData: Authform) {
   const supabase = await createClient();
@@ -83,14 +83,6 @@ export async function insertUserData(formData: Authform) {
   console.log('User data inserted successfully:', { email, user_name });
 }
 
-interface getUserParams {
-  user_name: string;
-  email: string;
-
-  phone: string;
-  bio?: string;
-}
-
 export async function getUser() {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.getUser();
@@ -125,7 +117,85 @@ export async function getUserInfo() {
     return null;
   }
 
-  console.log('1.) User info:', data);
+  return data;
+}
+
+export async function UploadFileToServer({ file, path = '' }: FileWithPath) {
+  const supabase = await createClient();
+  const uploadPath = path
+    ? `uploads/${path}/${file.file.name}`
+    : `uploads/${file.file.name}`;
+
+  console.log('Pather:', path);
+  console.log('Path:', uploadPath);
+
+  const { data, error } = await supabase.storage
+    .from('files')
+    .upload(uploadPath, file.file, {
+      cacheControl: '3600',
+      upsert: true,
+    });
+
+  console.log('File data:', data);
+
+  const file_type = file.file.name.split('.').pop() || 'unknown';
+  await supabase.from('Files').insert([
+    {
+      file_name: file.file.name,
+      file_size: file.file.size,
+      file_type: file_type,
+      url: data?.path || '',
+    },
+  ]);
+
+  console.log('Files Uploaded');
+  if (error) {
+    console.error('Error uploading file:', error.message);
+    throw new Error('Upload failed');
+  }
+}
+
+export async function deleteFile(file: { file: File }) {
+  const supabase = await createClient();
+  const { data, error } = await supabase.storage
+    .from('files')
+    .remove([`uploads/${file.file.name}`]);
+
+  if (error) {
+    console.error('Error deleting file:', error.message);
+    throw new Error('Delete failed');
+  }
+}
+export async function getFiles(path: { path: string }) {
+  const supabase = createClient();
+
+  const { data, error } = await (await supabase)
+    .from('Files')
+    .select('*')
+    .ilike('url', `uploads/${path}/%`)
+    .order('created_at', { ascending: false });
+
+  // console.log('Files:', data);
+  if (error) {
+    console.error('Error fetching files:', error.message);
+    throw new Error('Fetch failed');
+  }
 
   return data;
+}
+
+export async function getFile({ file_name, path }: getFileType) {
+  const supabase = await createClient();
+  const bucketName = 'files';
+
+  // Ensure trailing slash isn't duplicated
+  const cleanPath = path.replace(/\/$/, '');
+  const uploadPath = `uploads/${cleanPath}/${file_name}`;
+
+  const { data } = supabase.storage.from(bucketName).getPublicUrl(uploadPath);
+
+  console.log('Path:', uploadPath);
+  console.log('File data:', data);
+
+  return data?.publicUrl;
 }

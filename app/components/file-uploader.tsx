@@ -8,21 +8,15 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Card, CardContent } from '@/components/ui/card';
 import { formatBytes } from '@/lib/utils';
+import { UploadFileToServer } from '@/utils/actions'; // Adjust the import based on your file structure
+import { FileWithStatus, FileStatus } from '@/utils/supabase/types';
 
-type FileStatus = 'idle' | 'uploading' | 'success' | 'error';
-
-interface FileWithStatus {
-  file: File;
-  id: string;
-  progress: number;
-  status: FileStatus;
-  url?: string;
-}
-
-export function FileUploader() {
+export function FileUploader({ path }: { path: string }) {
   const [files, setFiles] = useState<FileWithStatus[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  console.log('Pat', path);
 
   const handleFileChange = (selectedFiles: FileList | null) => {
     if (!selectedFiles) return;
@@ -52,52 +46,6 @@ export function FileUploader() {
     handleFileChange(e.dataTransfer.files);
   };
 
-  const uploadFile = async (fileWithStatus: FileWithStatus) => {
-    try {
-      setFiles((prev) =>
-        prev.map((f) =>
-          f.id === fileWithStatus.id ? { ...f, status: 'uploading' } : f
-        )
-      );
-
-      const formData = new FormData();
-      formData.append('file', fileWithStatus.file);
-
-      const response = await fetch(
-        `/api/upload?filename=${encodeURIComponent(fileWithStatus.file.name)}`,
-        {
-          method: 'POST',
-          body: fileWithStatus.file,
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error('Upload failed');
-      }
-
-      const blob = (await response.json()) as unknown as {
-        url: string;
-      };
-
-      setFiles((prev) =>
-        prev.map((f) =>
-          f.id === fileWithStatus.id
-            ? { ...f, status: 'success', progress: 100, url: blob.url }
-            : f
-        )
-      );
-    } catch (error) {
-      console.error('Error uploading file:', error);
-      setFiles((prev) =>
-        prev.map((f) =>
-          f.id === fileWithStatus.id
-            ? { ...f, status: 'error', progress: 0 }
-            : f
-        )
-      );
-    }
-  };
-
   const removeFile = (id: string) => {
     setFiles((prev) => prev.filter((f) => f.id !== id));
   };
@@ -106,7 +54,7 @@ export function FileUploader() {
     files
       .filter((f) => f.status === 'idle')
       .forEach((file) => {
-        uploadFile(file);
+        UploadFileToServer({ file, path });
       });
   };
 
@@ -183,7 +131,13 @@ export function FileUploader() {
                         {fileWithStatus.status === 'idle' && (
                           <Button
                             size="sm"
-                            onClick={() => uploadFile(fileWithStatus)}
+                            onClick={() => {
+                              console.log('Path:', path);
+                              UploadFileToServer({
+                                file: fileWithStatus,
+                                path,
+                              });
+                            }}
                           >
                             Upload
                           </Button>
@@ -222,7 +176,13 @@ export function FileUploader() {
                               size="sm"
                               variant="outline"
                               className="ml-auto"
-                              onClick={() => uploadFile(fileWithStatus)}
+                              onClick={() => {
+                                console.log('Path:', path);
+                                UploadFileToServer({
+                                  file: fileWithStatus,
+                                  path,
+                                });
+                              }}
                             >
                               Retry
                             </Button>

@@ -42,6 +42,9 @@ export default function UserProfilePage() {
   const [email, setEmail] = useState('');
   const [bio, setBio] = useState('');
 
+  // const user = getUserInfo();
+  // console.log('User:', user);
+
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
@@ -174,7 +177,7 @@ export default function UserProfilePage() {
               <Label className="mb-2" htmlFor="new-password">
                 New Password
               </Label>
-              <Input id="new-password" type="password" placeholder="********" />
+              <Input id="new-password" type="password" placeholder="" />
             </CardContent>
           </Card>
         </TabsContent>

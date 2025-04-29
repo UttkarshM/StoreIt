@@ -9,6 +9,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      screens: {
+        '4xl': '1920px',
+      },
       colors: {
         brand: {
           '100': '#EA6365',

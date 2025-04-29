@@ -1,10 +1,13 @@
 'use client';
 
+import { UseDispatch, useSelector } from 'react-redux';
+import { AppState } from '@/redux/store';
+import { setUser, clearUser } from '@/redux/userSlice';
+
 import React from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-// import { signup, login } from '@/lib/actions/auth/auth';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -13,8 +16,11 @@ import {
   FormItem,
   FormLabel,
 } from '@/components/ui/form';
+
+import { getUserInfo } from '@/utils/actions';
 import { Input } from '@/components/ui/input';
 import { login, signup } from '../../utils/actions';
+import { useDispatch } from 'react-redux';
 
 type FormType = 'sign-in' | 'sign-up';
 
@@ -33,6 +39,12 @@ type SignUpData = z.infer<typeof signUpSchema>;
 type SignInData = z.infer<typeof signInSchema>;
 
 export const AuthForm = ({ type }: { type: FormType }) => {
+  const dispatch = useDispatch();
+  const user_state = useSelector((state: AppState) => state.user);
+  // const isAuthenticated = useSelector(
+  //   (state: AppState) => state.user.isAuthenticated
+  // );
+
   const isSignUp = type === 'sign-up';
 
   const form = useForm<SignUpData | SignInData>({
@@ -120,7 +132,6 @@ export const AuthForm = ({ type }: { type: FormType }) => {
               </FormItem>
             )}
           />
-
           <Button type="submit">{isSignUp ? 'Sign Up' : 'Sign In'}</Button>
         </form>
       </Form>
