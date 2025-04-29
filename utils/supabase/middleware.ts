@@ -28,7 +28,21 @@ export async function updateSession(request: NextRequest) {
     },
   });
   // console.log('supabaseResponse', supabaseResponse);
-  await supabase.auth.getUser();
+  // await supabase.auth.getUser();
+  if (
+    request.nextUrl.pathname === '/login' ||
+    request.nextUrl.pathname === '/signup'
+  ) {
+    return supabaseResponse;
+  }
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    console.log('User not logged in, redirecting to login page...');
+    return NextResponse.redirect(new URL('/login', request.url));
+  }
 
   return supabaseResponse;
 }

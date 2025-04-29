@@ -4,6 +4,7 @@ import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
 
 export default function HomePage() {
+  
   return (
     <main className="flex flex-col items-center justify-center min-h-screen px-4 py-12 text-center bg-gradient-to-br from-slate-50 to-white">
       <Card className="max-w-2xl w-full shadow-xl p-8 border-0">

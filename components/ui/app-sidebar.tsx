@@ -42,7 +42,7 @@ export function AppSidebar({
     <Sidebar variant="sidebar" collapsible="icon">
       {trigger && (
         <SidebarHeader>
-          <div className="flex flex-col justify-center items-start w-full pt-5 ml-5 text-[24px] ">
+          <div className="flex flex-col justify-center items-center w-full pt-3 text-[24px] ">
             <User className="w-12 h-12 text-blue-600 mb-7 border border-slate-700 rounded-[50%]" />
             <h1 className="text-lg font-semibold">Storeit</h1>
           </div>
@@ -50,13 +50,15 @@ export function AppSidebar({
       )}
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>{menu_label}</SidebarGroupLabel>
+          <SidebarGroupLabel className="flex flex-row justify-center">
+            {menu_label}
+          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <a href={item.url}>
+                    <a className="flex flex-row justify-center" href={item.url}>
                       <item.icon />
                       <span>{item.title}</span>
                     </a>

@@ -1,40 +1,24 @@
-import React from 'react';
+'use client';
+
+import React, { useEffect, useState } from 'react';
 
 import SearchBar from '../../components/SearchBar';
-var items = [
-  {
-    name: 'file1',
-    image: 'https://www.w3schools.com/w3images/lights.jpg',
-    size: '12mb',
-  },
-  {
-    name: 'file1',
-    image: 'https://www.w3schools.com/w3images/lights.jpg',
-    size: '12mb',
-  },
-  {
-    name: 'file1',
-    image: 'https://www.w3schools.com/w3images/lights.jpg',
-    size: '12mb',
-  },
-  {
-    name: 'file1',
-    image: 'https://www.w3schools.com/w3images/lights.jpg',
-    size: '12mb',
-  },
-  {
-    name: 'file1',
-    image: 'https://www.w3schools.com/w3images/lights.jpg',
-    size: '12mb',
-  },
-  {
-    name: 'file1',
-    image: 'https://www.w3schools.com/w3images/lights.jpg',
-    size: '12mb',
-  },
-];
+import { getFiles } from '@/utils/actions';
+import { Entries_Type } from '@/utils/supabase/types';
 
 const Entries = () => {
+
+  
+  useEffect(() => {
+    const getData = async () => {
+      const data = (await getFiles()) as Entries_Type[];
+      console.log('data', data);
+      setItems(data);
+    };
+    getData();
+  }, []);
+
+  const [items, setItems] = useState<Entries_Type[]>([]);
   return (
     <div className="flex flex-col flex-1 p-3">
       <div className="flex w-full h-20 bg-white">
@@ -56,13 +40,13 @@ const Entries = () => {
                   style={{ width: '250px' }} // Optional: to set a fixed width per card
                 >
                   <img
-                    src={item.image}
-                    alt={item.name}
+                    src={item.url}
+                    alt={item.file_name}
                     className="object-cover w-full h-full"
                   />
                   <div className="flex flex-row items-center justify-around w-full h-full p-2">
-                    <p className="mt-2 text-sm text-[20px] mr-5">{item.name}</p>
-                    <p className="mt-2 text-sm text-[12px]">{item.size}</p>
+                    <p className="mt-2 text-sm text-[20px] mr-5">{item.url}</p>
+                    <p className="mt-2 text-sm text-[12px]">{item.file_size}</p>
                   </div>
                 </div>
               ))}
