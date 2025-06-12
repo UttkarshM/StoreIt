@@ -36,56 +36,72 @@ export const Entries_component = ({ items }: { items: Entries_Type[] }) => {
   };
 
   return (
-    <div className="mt-10 grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 4xl:grid-cols-5">
-      {items.map((file, idx) => (
-        <Card
-          key={idx}
-          className=" flex flex-col justify-center items-center relative group hover:shadow-lg transition-shadow min-w-[300px] max-w-[400px] overflow-hidden"
-        >
-          {/* <img
-            src="@/public/pdf.png"
-            alt="File Preview"
-            className="w-full h-40 object-cover"
-          /> */}
+    <div className="flex flex-col bg-white border-none rounded-lg w-full mx-auto shadow-lg shadow-orange-300/50 mt-10">
+      {/* Header */}
+      <div className="bg-[#FFF5E6] p-4 rounded-t-lg mb-4">
+        <h2 className="text-3xl font-bold bg-gradient-to-r from-[#FB9E3A] to-[#FCEF91] text-transparent bg-clip-text text-left">
+          Recent Files
+        </h2>
+      </div>
 
-          <Image
-            src={file_types_to_logos[file.file_type as FileType] || pdfIcon}
-            alt="File Preview"
-            className="w-40 h-40 object-fill"
-          />
+      {/* Responsive Grid with min column width */}
+      <div className="grid gap-6 grid-cols-[repeat(auto-fit,minmax(240px,1fr))] p-6">
+        {items.slice(0, 4).map((file, idx) => (
+          <Card
+            key={idx}
+            className="flex flex-col justify-center items-center relative group hover:shadow-lg transition-shadow overflow-hidden"
+          >
+            <Image
+              src={file_types_to_logos[file.file_type as FileType] || pdfIcon}
+              alt="File Preview"
+              className="w-40 h-40 object-fill"
+            />
 
-          <div className="bg-white text-center py-2 px-4 font-semibold text-sm">
-            {file.file_name}
-          </div>
-
-          <div className="absolute inset-0 bg-white/95 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-4 flex flex-col justify-between">
-            <div>
-              <h4 className="font-bold truncate">{file.file_name}</h4>
-              <p className="text-xs text-gray-500">{file.created_at}</p>
+            <div className="bg-white text-center py-2 px-4 font-semibold text-sm">
+              {file.file_name}
             </div>
-            <CardContent className="text-sm text-muted-foreground mt-2">
-              <p>
-                Type: <Badge>{file.file_type}</Badge>
-              </p>
-              <p>
-                Size:{' '}
-                {parseFloat(
-                  (
-                    parseFloat(file.file_size.toFixed(10)) /
-                    (1024 * 1024)
-                  ).toFixed(2)
-                )}{' '}
-                MB
-              </p>
-            </CardContent>
-            <CardFooter className="mt-4 flex justify-center">
-              <Button size="sm" onClick={() => handleDownload(file.file_name)}>
-                Download
-              </Button>
-            </CardFooter>
-          </div>
-        </Card>
-      ))}
+
+            <div className="absolute inset-0 bg-white/95 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-4 flex flex-col justify-between">
+              <div>
+                <h4 className="font-bold truncate">{file.file_name}</h4>
+                <p className="text-xs text-gray-500">{file.created_at}</p>
+              </div>
+
+              <CardContent className="text-sm text-muted-foreground mt-2">
+                <p>
+                  Type: <Badge>{file.file_type}</Badge>
+                </p>
+                <p>
+                  Size:{' '}
+                  {parseFloat(
+                    (
+                      parseFloat(file.file_size.toFixed(10)) /
+                      (1024 * 1024)
+                    ).toFixed(2)
+                  )}{' '}
+                  MB
+                </p>
+              </CardContent>
+
+              <CardFooter className="mt-4 flex justify-center">
+                <Button
+                  size="sm"
+                  onClick={() => handleDownload(file.file_name)}
+                >
+                  Download
+                </Button>
+                <Button
+                  className="bg-red-600 text-white hover:bg-red-400 ml-2"
+                  size="sm"
+                  onClick={() => console.log('deleted file' + file.file_name)}
+                >
+                  Delete
+                </Button>
+              </CardFooter>
+            </div>
+          </Card>
+        ))}
+      </div>
     </div>
   );
 };

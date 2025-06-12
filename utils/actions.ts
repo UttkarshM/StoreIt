@@ -166,16 +166,21 @@ export async function deleteFile(file: { file: File }) {
     throw new Error('Delete failed');
   }
 }
-export async function getFiles(path: { path: string }) {
-  const supabase = createClient();
+export async function getFiles(path: { path: string }, searchTerm?: string) {
+  const supabase = await createClient();
 
-  const { data, error } = await (await supabase)
+  let query = supabase
     .from('Files')
     .select('*')
-    .ilike('url', `uploads/${path}/%`)
+    .ilike('url', `uploads/${path.path}/%`)
     .order('created_at', { ascending: false });
 
-  // console.log('Files:', data);
+  if (searchTerm && searchTerm.trim() !== '') {
+    query = query.ilike('file_name', `%${searchTerm}%`);
+  }
+
+  const { data, error } = await query;
+
   if (error) {
     console.error('Error fetching files:', error.message);
     throw new Error('Fetch failed');

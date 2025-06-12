@@ -1,89 +1,6 @@
-// 'use client';
-
-// import { Pie, PieChart } from 'recharts';
-
-// import {
-//   ChartContainer,
-//   ChartTooltip,
-//   ChartTooltipContent,
-// } from '@/components/ui/chart';
-// import { Entries_Type } from '@/utils/supabase/types';
-
-// interface PieChartProps {
-//   data: Entries_Type[];
-// }
-
-// const ColorsForChart = {
-//   Images: '#4f46e5',
-//   Docs: '#10b981',
-//   Csv: '#f59e0b',
-//   Other: '#f59e0b',
-// };
-
-// export default function PieChartComponent() {
-//   return (
-//     <div className="flex flex-col justify-center max-w-md mx-auto p-6 rounded-lg border border-gray-200">
-//       <h2 className="text-xl font-semibold mb-4 text-center">
-//         Space Usage Breakdown
-//       </h2>
-//       <ChartContainer
-//         config={{
-//           Space: {
-//             label: 'Total Space',
-//           },
-//           pdf: {
-//             label: 'pdf',
-//             color: 'hsl(var(--chart-1))',
-//           },
-//           pptx: {
-//             label: 'pptx',
-//             color: 'hsl(var(--chart-2))',
-//           },
-//           docx: {
-//             label: 'docx',
-//             color: 'hsl(var(--chart-3))',
-//           },
-//           images: {
-//             label: 'images',
-//             color: 'hsl(var(--chart-5))',
-//           },
-//           others: {
-//             label: 'others',
-//             color: 'hsl(var(--chart-6))',
-//           },
-//         }}
-//         className="aspect-square min-h-[300px]"
-//       >
-//         <PieChart>
-//           <ChartTooltip content={<ChartTooltipContent hideLabel />} />
-//           <Pie
-//             data={[
-//               { browser: , visitors: 275, fill: ColorsForChart.Images },
-//               { browser: 'Docs', visitors: 200, fill: ColorsForChart.Docs },
-//               { browser: 'Csv', visitors: 187, fill: ColorsForChart.Csv },
-//               { browser: 'other', visitors: 90, fill: ColorsForChart.Other },
-//             ]}
-//             dataKey="visitors"
-//             nameKey="browser"
-//             cx="50%"
-//             cy="50%"
-//             outerRadius={80}
-//             label
-//           />
-//         </PieChart>
-//       </ChartContainer>
-//     </div>
-//   );
-// }
-
 'use client';
 
 import { Pie, PieChart } from 'recharts';
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from '@/components/ui/chart';
 import { Entries_Type } from '@/utils/supabase/types';
 
 interface PieChartProps {
@@ -91,18 +8,25 @@ interface PieChartProps {
 }
 
 const ColorsForChart = {
-  pdf: '#4f46e5',
-  docx: '#10b981',
-  pptx: '#3b82f6',
-  images: '#f59e0b',
+  pdf: '#FCEF91',
+  docx: '#FB9E3A',
+  pptx: '#E6521F',
+  images: '#EA2F14',
   others: '#ef4444',
+};
+
+const LabelsForChart = {
+  pdf: 'PDF',
+  docx: 'DOCX',
+  pptx: 'PPTX',
+  images: 'Images',
+  others: 'Others',
 };
 
 const isImage = (type: string) =>
   ['png', 'jpg', 'jpeg', 'gif', 'bmp', 'webp'].includes(type.toLowerCase());
 
 export default function PieChartComponent({ data }: PieChartProps) {
-  // Group file sizes by type
   const grouped = data.reduce<Record<string, number>>((acc, entry) => {
     const ext = entry.file_type.toLowerCase();
     let key: string;
@@ -114,49 +38,62 @@ export default function PieChartComponent({ data }: PieChartProps) {
     } else {
       key = 'others';
     }
-
     acc[key] = (acc[key] || 0) + entry.file_size;
     return acc;
   }, {});
 
-  // Format data for the chart
+  const totalSize = Object.values(grouped).reduce((sum, val) => sum + val, 0);
+
   const chartData = Object.entries(grouped).map(([key, value]) => ({
-    browser: key,
-    visitors: parseFloat((value / (1024 * 1024)).toFixed(2)), // in mb
+    name: LabelsForChart[key as keyof typeof LabelsForChart],
+    value: parseFloat((value / (1024 * 1024)).toFixed(2)), // in MB
+    percent: (value / totalSize) * 100,
     fill: ColorsForChart[key as keyof typeof ColorsForChart] || '#ccc',
   }));
 
   return (
-    <div className="flex flex-col justify-center mx-auto pl-6 h-full min-w-[400px] rounded-lg border border-gray-200">
-      <h2 className="text-xl font-semibold mb-4 text-center">
-        Types of Files in Space in mb
-      </h2>
-      <ChartContainer
-        config={{
-          pdf: { label: 'PDF', color: ColorsForChart.pdf },
-          docx: { label: 'DOCX', color: ColorsForChart.docx },
-          pptx: { label: 'PPTX', color: ColorsForChart.pptx },
-          images: { label: 'Images', color: ColorsForChart.images },
-          others: { label: 'Others', color: ColorsForChart.others },
-        }}
-        className="aspect-square min-h-[400px]"
-      >
-        <PieChart>
-          <ChartTooltip content={<ChartTooltipContent hideLabel />} />
-          <Pie
-            data={chartData}
-            dataKey="visitors"
-            nameKey="browser"
-            cx="50%"
-            cy="50%"
-            outerRadius={120}
-            label={({ name, percent }) =>
-              `${name} (${(percent * 100).toFixed(0)}%)`
-            }
-            labelLine={false}
-          />
-        </PieChart>
-      </ChartContainer>
+    <div className="flex flex-col bg-white border-none rounded-lg w-full max-w-5xl mx-auto h-[400px] shadow-lg shadow-orange-300/50">
+      {/* Title Container with light peach background */}
+      <div className="bg-[#FFF5E6] p-6 rounded-t-lg">
+        <h2 className="text-3xl font-bold bg-gradient-to-r from-[#FB9E3A] to-[#FCEF91] text-transparent bg-clip-text text-left">
+          Types of Files
+        </h2>
+      </div>
+
+      {/* Chart and Legend */}
+      <div className="flex p-6 rounded-b-lg">
+        <div className="w-1/2 flex flex-col justify-center gap-2 pr-8">
+          {chartData.map((entry, index) => (
+            <div key={index} className="flex items-center gap-2 text-sm">
+              <span
+                className="inline-block w-3 h-3 rounded-full"
+                style={{ backgroundColor: entry.fill }}
+              ></span>
+              <span className="font-medium">{entry.name}</span> –{' '}
+              <span>{entry.percent.toFixed(0)}%</span>
+            </div>
+          ))}
+        </div>
+
+        <div className="w-1/2 flex justify-center items-center">
+          <PieChart width={300} height={300}>
+            <Pie
+              data={chartData}
+              dataKey="value"
+              nameKey="name"
+              cx="50%"
+              cy="50%"
+              outerRadius={100}
+              innerRadius={60}
+              fill="#8884d8"
+              labelLine={false}
+              isAnimationActive={false}
+              paddingAngle={5}
+              cornerRadius={5}
+            />
+          </PieChart>
+        </div>
+      </div>
     </div>
   );
 }

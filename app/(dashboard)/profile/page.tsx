@@ -139,21 +139,6 @@ export default function UserProfilePage() {
                   />
                 </div>
               </CardContent>
-              <CardFooter>
-                <div className="flex flex-col items-center justify-center w-full">
-                  <Label className="text-black mt-5 text-[14px]">
-                    Total Space Occupied:
-                  </Label>
-                  <Label className="text-gray-600 ml-2 mt-5 text-[14px]">
-                    50 GB of 100 GB
-                  </Label>
-                  <div className="flex flex-col items-center justify-between w-[100px] mt-5">
-                    <Button type="submit" className="w-full ml-2">
-                      Save
-                    </Button>
-                  </div>
-                </div>
-              </CardFooter>
             </form>
           </Card>
         </TabsContent>

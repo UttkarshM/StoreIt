@@ -14,7 +14,7 @@ export default function Home() {
     <main className="flex w-full min-h-screen flex-col items-center justify-center p-4 md:p-24">
       <div className="w-full max-w-3xl mx-auto space-y-8">
         <div className="space-y-2 text-center">
-          <h1 className="text-3xl font-bold">File Upload</h1>
+          <h1 className="text-3xl font-bold text-[#FB9E3A]">File Upload</h1>
           <p className="text-muted-foreground">
             Upload your files securely to our cloud storage
           </p>

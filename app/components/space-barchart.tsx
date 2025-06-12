@@ -1,103 +1,3 @@
-// 'use client';
-
-// import { Entries_Type } from '@/utils/supabase/types';
-
-// interface SpaceBarChartProps {
-//   data: Entries_Type[];
-// }
-
-// export default function SpaceBarChart({ data }: SpaceBarChartProps) {
-//   // Sum total size and size per type
-//   const total = data.reduce((acc, entry) => acc + entry.file_size, 0);
-
-//   const grouped = data.reduce<Record<string, number>>((acc, entry) => {
-//     acc[entry.file_type] = (acc[entry.file_type] || 0) + entry.file_size;
-//     return acc;
-//   }, {});
-
-//   //   const colors = [
-//   //     'bg-blue-500',
-//   //     'bg-green-500',
-//   //     'bg-yellow-500',
-//   //     'bg-pink-500',
-//   //     'bg-purple-500',
-//   //   ];
-
-//   const ColorsForChart = {
-//     pdf: '#4f46e5',
-//     docx: '#10b981',
-//     pptx: '#3b82f6',
-//     png: '#f59e0b',
-//     // others: '#ef4444',
-//   };
-
-//   let totalSize = 50 * 1024 * 1024; //50mb
-//   const fixedWidth = totalSize;
-//   return (
-//     <div className="flex flex-col items-center justify-center mx-auto h-full min-w-[400px] rounded-lg border border-gray-200">
-//       <div className="flex flex-col w-full h-full justify-start">
-//         <h2 className="text-xl font-semibold mb-2 underline">
-//           Space Usage by Type
-//         </h2>
-//         <div className="flex mt-10 mb-10 w-[65%] h-4 overflow-hidden rounded-lg border border-gray-300">
-//           {Object.entries(grouped).map(([type, size], index) => {
-//             totalSize -= size;
-//             const percentage = (size / fixedWidth) * 100;
-//             return (
-//               <div
-//                 key={type}
-//                 className={`${ColorsForChart[type]} h-full`}
-//                 style={{ width: `${percentage}%` }}
-//                 title={`${type}: ${percentage.toFixed(1)}%`}
-//               />
-//             );
-//           })}
-
-//           {/* Render remaining space if any */}
-//           {(() => {
-//             const usedSize = Object.values(grouped).reduce(
-//               (acc, size) => acc + size,
-//               0
-//             );
-//             const remaining = totalSize;
-//             console.log('remaining', remaining);
-//             if (remaining > 0) {
-//               return (
-//                 <div
-//                   key="remaining"
-//                   className="bg-gray-600 h-full"
-//                   style={{ width: `${(remaining / fixedWidth) * 100}%` }}
-//                   title={`Remaining: ${((remaining / fixedWidth) * 100).toFixed(1)}%`}
-//                 />
-//               );
-//             }
-//             return null;
-//           })()}
-//         </div>
-
-//         <div className="flex flex-col flex-wrap gap-2 mt-4">
-//           {Object.entries(grouped).map(([type, size], index) => (
-//             <div key={type} className="flex items-center gap-2">
-//               <div
-//                 className={`w-4 h-4 ${colors[index % colors.length]} rounded-sm`}
-//               />
-//               <span className="text-sm">
-//                 {type} - {parseFloat((size / (1024 * 1024)).toFixed(2))}mb
-//               </span>
-//             </div>
-//           ))}
-//           <div key="free-space" className="flex items-center gap-2">
-//             <div className={`w-4 h-4 bg-gray-600 rounded-sm`} />
-//             <span className="text-sm">
-//               free-space - {parseFloat((totalSize / (1024 * 1024)).toFixed(2))}mb
-//             </span>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
 'use client';
 
 import { Entries_Type } from '@/utils/supabase/types';
@@ -116,10 +16,11 @@ export default function SpaceBarChart({ data }: SpaceBarChartProps) {
   }, {});
 
   const ColorsForChart: Record<string, string> = {
-    pdf: '#4f46e5',
-    docx: '#10b981',
-    pptx: '#3b82f6',
-    png: '#f59e0b',
+    pdf: '#FCEF91',
+    docx: '#FB9E3A',
+    pptx: '#E6521F',
+    png: '#EA2F14',
+    jpg: '#EA2F14',
     // You can add more file types here
   };
 
@@ -135,12 +36,15 @@ export default function SpaceBarChart({ data }: SpaceBarChartProps) {
   const remainingSize = fixedWidth - totalUsedSize;
 
   return (
-    <div className="flex flex-col items-center justify-center mx-auto h-full min-w-[400px] rounded-lg border border-gray-200">
-      <div className="flex flex-col w-full h-full justify-start">
-        <h2 className="text-xl font-semibold mb-2 underline">
+    <div className="flex flex-col bg-white border-none rounded-lg w-full max-w-5xl h-[400px] mx-auto shadow-lg shadow-orange-300/50">
+      {/* Title container with light peach background */}
+      <div className="bg-[#FFF5E6] p-6 rounded-t-lg">
+        <h2 className="text-3xl font-bold bg-gradient-to-r from-[#FB9E3A] to-[#FCEF91] text-transparent bg-clip-text text-left">
           Space Usage by Type
         </h2>
+      </div>
 
+      <div className="flex flex-col w-full h-full justify-start p-6 rounded-b-lg">
         <div className="flex mt-10 mb-10 w-[65%] h-4 overflow-hidden rounded-lg border border-gray-300">
           {Object.entries(grouped).map(([type, size]) => {
             const percentage = (size / fixedWidth) * 100;
@@ -162,7 +66,7 @@ export default function SpaceBarChart({ data }: SpaceBarChartProps) {
               className="h-full"
               style={{
                 width: `${(remainingSize / fixedWidth) * 100}%`,
-                backgroundColor: '#6b7280',
+                backgroundColor: '#fdd0a2',
               }} // Gray color for remaining space
               title={`Remaining: ${(remainingSize / fixedWidth) * 100}%`}
             />
@@ -174,7 +78,7 @@ export default function SpaceBarChart({ data }: SpaceBarChartProps) {
             <div key={type} className="flex items-center gap-2">
               <div
                 className="w-4 h-4 rounded-sm"
-                style={{ backgroundColor: ColorsForChart[type] || '#d1d5db' }} // Default gray if type is unknown
+                style={{ backgroundColor: ColorsForChart[type] || '#d1d5db' }}
               />
               <span className="text-sm">
                 {type} - {parseFloat((size / (1024 * 1024)).toFixed(2))}MB
@@ -182,7 +86,7 @@ export default function SpaceBarChart({ data }: SpaceBarChartProps) {
             </div>
           ))}
           <div key="free-space" className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-gray-600 rounded-sm" />
+            <div className="w-4 h-4 bg-[#fdd0a2] rounded-sm" />
             <span className="text-sm">
               Free Space -{' '}
               {parseFloat((remainingSize / (1024 * 1024)).toFixed(2))}MB

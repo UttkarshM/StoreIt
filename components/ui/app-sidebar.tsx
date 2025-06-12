@@ -14,6 +14,7 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 
+import Company from '@/public/company.jpg';
 import { User } from 'lucide-react';
 // Menu items.
 
@@ -43,7 +44,7 @@ export function AppSidebar({
       {trigger && (
         <SidebarHeader>
           <div className="flex flex-col justify-center items-center w-full pt-3 text-[24px] ">
-            <User className="w-12 h-12 text-blue-600 mb-7 border border-slate-700 rounded-[50%]" />
+            <img className="h-20 w-20 rounded-[50%]" src="company.jpg"></img>
             <h1 className="text-lg font-semibold">Storeit</h1>
           </div>
         </SidebarHeader>
