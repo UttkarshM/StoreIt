@@ -1,35 +1,15 @@
-// import { configureStore } from '@reduxjs/toolkit';
-// // import { createWrapper } from 'next-redux-wrapper'; //not able to save states
-// import userReducer from './userSlice';
-
-// const makeStore = () =>
-//   configureStore({
-//     reducer: {
-//       user: userReducer,
-//     },
-//     devTools: process.env.NODE_ENV !== 'production',
-//   });
-
-// export const store = makeStore();
-
-// export type AppStore = ReturnType<typeof makeStore>;
-// export type AppState = ReturnType<AppStore['getState']>;
-// export type AppDispatch = AppStore['dispatch'];
-
-// // export const wrapper = createWrapper<AppStore>(makeStore);
-
 // store.ts
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import userReducer from './userSlice';
-
-// Import redux-persist conditionally
-const isClient = typeof window !== 'undefined';
 
 const rootReducer = combineReducers({
   user: userReducer,
 });
 
-// If on client, use redux-persist
+export type RootState = ReturnType<typeof rootReducer>;
+
+const isClient = typeof window !== 'undefined';
+
 let store: ReturnType<typeof configureStore>;
 let persistor: any;
 
@@ -54,7 +34,6 @@ if (isClient) {
 
   persistor = persistStore(store);
 } else {
-  // Server-side: no persistence
   store = configureStore({
     reducer: rootReducer,
     devTools: process.env.NODE_ENV !== 'production',
@@ -63,5 +42,5 @@ if (isClient) {
 
 export { store, persistor };
 export type AppStore = typeof store;
-export type AppState = ReturnType<AppStore['getState']>;
+export type AppState = RootState;
 export type AppDispatch = AppStore['dispatch'];

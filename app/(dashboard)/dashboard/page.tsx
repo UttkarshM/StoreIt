@@ -9,13 +9,12 @@ import { useEffect, useState } from 'react';
 import { getFiles, getUserInfo } from '@/utils/actions';
 import { Entries_Type } from '@/utils/supabase/types';
 import { Entries_component } from '@/app/components/Entries';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppState } from '@/redux/store';
 import { setUser } from '@/redux/userSlice';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 
 export default function DashboardPage() {
-  const dispatch = useDispatch();
-  const user_state = useSelector((state: AppState) => state.user);
+  const dispatch = useAppDispatch();
+  const user_state = useAppSelector((state) => state.user);
   const [items, setItems] = useState<Entries_Type[]>([]);
   const [searchText, setSearchText] = useState<string>('');
 
@@ -45,7 +44,6 @@ export default function DashboardPage() {
 
   return (
     <main className="max-w-[1440px] mx-auto px-6 py-10 space-y-10 bg-white">
-      {/* Search Bar Top */}
       <div className="flex flex-row w-full mb-6">
         <SearchBar setText={setSearchText} />
         <Link href="/upload">

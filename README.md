@@ -2,7 +2,16 @@
 
 **StoreIt** is a modern, secure, and fast cloud storage platform built with Next.js 15, serving as a personal Google Drive alternative. Upload, manage, and organize your files with an intuitive dashboard and powerful analytics.
 
-![StoreIt Dashboard](https://via.placeholder.com/800x400?text=StoreIt+Dashboard)
+## 📸 Screenshots
+
+### Dashboard Overview
+![StoreIt Dashboard](./public/dashboard.png)
+
+### File Management
+![File Management](./public/files.png)
+
+### File Upload Interface
+![File Upload](./public/upload.png)
 
 ## 🚀 Features
 
